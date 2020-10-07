@@ -1,6 +1,7 @@
 package com.ewan;
 
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -55,13 +56,17 @@ public class Main {
     }
 
     static void grades(Scanner sc) {
-        System.out.println("How many grades?");
-        int numGrades = sc.nextInt();
+        System.out.println("Type \"done\" when you're done");
         ArrayList<Integer> grades = new ArrayList<>();
-        for (int i = 0; i < numGrades; i++) {
-            System.out.print("Enter grade " + (i+1) + ": ");
-            int grade = sc.nextInt();
-            grades.add(grade);
+        while (true) {
+            System.out.print("Enter grade " + (grades.size()+1) + ": ");
+            try {
+                int grade = sc.nextInt();
+                grades.add(grade);
+            } catch (InputMismatchException e) {
+                sc.nextLine();
+                break;
+            }
         }
         int total = 0;
         System.out.print("You entered: ");
@@ -70,6 +75,6 @@ public class Main {
             total += grade;
         }
         System.out.println();
-        System.out.println("The average is " + ((float)total / numGrades));
+        System.out.println("The average is " + ((float)total / grades.size()));
     }
 }
