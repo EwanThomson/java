@@ -12,7 +12,7 @@ public class FlardQuest {
         this.sc = sc;
     }
 
-    boolean fight(int enemyHP) {
+    boolean fight(int enemyHP, String enemyName) {
         while (enemyHP > 0 && playerHP > 0) {
             System.out.println("fight or run? (1 = fight, 2 = run)");
             int choice = this.sc.nextInt();
@@ -23,10 +23,10 @@ public class FlardQuest {
                 if (enemyHP < 0) {
                     enemyHP = 0;
                 }
-                System.out.println("you deal " + damage + " damage to the ogre. it now has " + enemyHP + " HP.\n" +
+                System.out.println("you deal " + damage + " damage to the " + enemyName + ". it now has " + enemyHP + " HP.\n" +
                         "You have " + playerHP + " HP");
             } else if (choice == 2) {
-                System.out.println("the ogre kills you! you lose");
+                System.out.println("the " + enemyName + " kills you! you lose");
                 return false;
             }
         }
@@ -54,11 +54,10 @@ public class FlardQuest {
         }
 
         System.out.println("you head to the woods and find a slime");
-        if (!fight(24)) {
+        if (!fight(24, "slime")) {
             return;
         };
-        System.out.println("as you venture farther into the woods, you stumble upon an ogre");
-        if (!fight(30)) {
+        if (!fight(30, "ogre")) {
             return;
         }
         System.out.println("you win!\n");
