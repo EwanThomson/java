@@ -12,21 +12,21 @@ public class FlardQuest {
         this.sc = sc;
     }
 
-    boolean fight(int enemyHP, String enemyName) {
-        while (enemyHP > 0 && playerHP > 0) {
+    boolean fight(Enemy enemy) {
+        while (enemy.HP > 0 && playerHP > 0) {
             System.out.println("fight or run? (1 = fight, 2 = run)");
             int choice = this.sc.nextInt();
             playerHP -= 15;
             if (choice == 1) {
                 int damage = weapon.attackDamage();
-                enemyHP -= damage;
-                if (enemyHP < 0) {
-                    enemyHP = 0;
+                enemy.HP -= damage;
+                if (enemy.HP < 0) {
+                    enemy.HP = 0;
                 }
-                System.out.println("you deal " + damage + " damage to the " + enemyName + ". it now has " + enemyHP + " HP.\n" +
+                System.out.println("you deal " + damage + " damage to the " + enemy.name + ". it now has " + enemy.HP + " HP.\n" +
                         "You have " + playerHP + " HP");
             } else if (choice == 2) {
-                System.out.println("the " + enemyName + " kills you! you lose");
+                System.out.println("the " + enemy.name + " kills you! you lose");
                 return false;
             }
         }
@@ -54,10 +54,10 @@ public class FlardQuest {
         }
 
         System.out.println("you head to the woods and find a slime");
-        if (!fight(24, "slime")) {
+        if (!fight(new Slime())) {
             return;
         };
-        if (!fight(30, "ogre")) {
+        if (!fight(new Ogre())) {
             return;
         }
         System.out.println("you win!\n");
@@ -87,5 +87,30 @@ class Wand extends Weapon {
         } else {
             return 8;
         }
+    }
+}
+
+abstract class Enemy {
+    String name;
+    int HP;
+    abstract int attackDamage();
+}
+
+class Slime extends Enemy {
+    Slime() {
+        this.name = "slime";
+        this.HP = 24;
+    }
+    int attackDamage() {
+        return 1;
+    }
+}
+class Ogre extends Enemy {
+    Ogre() {
+        this.name = "ogre";
+        this.HP = 30;
+    }
+    int attackDamage() {
+        return 15;
     }
 }
