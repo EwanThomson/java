@@ -5,9 +5,37 @@ import java.util.Scanner;
 
 public class FlardQuest {
     Scanner sc;
+    Weapon weapon;
+    int playerHP = 100;
 
     FlardQuest(Scanner sc) {
         this.sc = sc;
+    }
+
+    boolean fight(int enemyHP) {
+        while (enemyHP > 0 && playerHP > 0) {
+            System.out.println("fight or run? (1 = fight, 2 = run)");
+            int choice = this.sc.nextInt();
+            playerHP -= 15;
+            if (choice == 1) {
+                int damage = weapon.attackDamage();
+                enemyHP -= damage;
+                if (enemyHP < 0) {
+                    enemyHP = 0;
+                }
+                System.out.println("you deal " + damage + " damage to the ogre. it now has " + enemyHP + " HP.\n" +
+                        "You have " + playerHP + " HP");
+            } else if (choice == 2) {
+                System.out.println("the ogre kills you! you lose");
+                return false;
+            }
+        }
+        if (playerHP > 0) {
+            return true;
+        } else {
+            System.out.println("you lose.\n");
+            return false;
+        }
     }
 
     void run() {
@@ -15,7 +43,7 @@ public class FlardQuest {
                 "the guildmaster offers you a sword or a wand\n" +
                 "which do you choose? (1 = sword, 2 = wand)");
         int choice = this.sc.nextInt();
-        Weapon weapon;
+
         if (choice == 1) {
             weapon = new Sword();
         } else if (choice == 2) {
@@ -24,48 +52,16 @@ public class FlardQuest {
             System.out.println("the guildmaster is very disappointed in you");
             return;
         }
-        int playerHP = 100;
-        int slimeHP = 24;
+
         System.out.println("you head to the woods and find a slime");
-        while (slimeHP > 0) {
-            System.out.println("fight or run? (1 = fight, 2 = run)");
-            choice = this.sc.nextInt();
-            if (choice == 1) {
-                int damage = weapon.attackDamage();
-                slimeHP -= damage;
-                if (slimeHP < 0) {
-                    slimeHP = 0;
-                }
-                System.out.println("you deal " + damage + " damage to the slime. it now has " + slimeHP + " HP");
-            } else if (choice == 2) {
-                System.out.println("the slime kills you! you lose");
-                return;
-            }
-        }
-        int ogreHP = 30;
+        if (!fight(24)) {
+            return;
+        };
         System.out.println("as you venture farther into the woods, you stumble upon an ogre");
-        while (ogreHP > 0 && playerHP > 0) {
-            System.out.println("fight or run? (1 = fight, 2 = run)");
-            choice = this.sc.nextInt();
-            playerHP -= 15;
-            if (choice == 1) {
-                int damage = weapon.attackDamage();
-                ogreHP -= damage;
-                if (ogreHP < 0) {
-                    ogreHP = 0;
-                }
-                System.out.println("you deal " + damage + " damage to the ogre. it now has " + ogreHP + " HP.\n" +
-                        "You have " + playerHP + " HP");
-            } else if (choice == 2) {
-                System.out.println("the ogre kills you! you lose");
-                return;
-            }
+        if (!fight(30)) {
+            return;
         }
-        if (playerHP > 0) {
-            System.out.println("you win!\n");
-        } else {
-            System.out.println("you lose.\n");
-        }
+        System.out.println("you win!\n");
     }
 }
 
