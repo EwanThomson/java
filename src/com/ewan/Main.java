@@ -13,6 +13,7 @@ public class Main {
             System.out.println("1 play Guess the number 1-100");
             System.out.println("2 sales tax calculator");
             System.out.println("3 grade calculator");
+            System.out.println("4 flard quest");
             int response = sc.nextInt();
             switch (response) {
                 case 1:
@@ -23,6 +24,9 @@ public class Main {
                     break;
                 case 3:
                     grades(sc);
+                    break;
+                case 4:
+                    new FlardQuest(sc).run();
                     break;
                 default:
                     System.out.println("that is not a valid response");
