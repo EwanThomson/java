@@ -1,5 +1,6 @@
 package com.ewan;
 
+import java.util.Random;
 import java.util.Scanner;
 
 public class FlardQuest {
@@ -35,25 +36,26 @@ public class FlardQuest {
                 if (slimeHP < 0) {
                     slimeHP = 0;
                 }
-                System.out.println("you deal " + damage + " damage to the slime. it now has " + slimeHP + " HP3");
+                System.out.println("you deal " + damage + " damage to the slime. it now has " + slimeHP + " HP");
             } else if (choice == 2) {
                 System.out.println("the slime kills you! you lose");
                 return;
             }
         }
-        int ogreHP = 24;
+        int ogreHP = 30;
         System.out.println("as you venture farther into the woods, you stumble upon an ogre");
         while (ogreHP > 0 && playerHP > 0) {
             System.out.println("fight or run? (1 = fight, 2 = run)");
             choice = this.sc.nextInt();
-            playerHP = playerHP - 15;
-            if (ogreHP == 1) {
+            playerHP -= 15;
+            if (choice == 1) {
                 int damage = weapon.attackDamage();
                 ogreHP -= damage;
                 if (ogreHP < 0) {
                     ogreHP = 0;
                 }
-                System.out.println("you deal " + damage + " damage to the slime. it now has " + ogreHP + " HP3");
+                System.out.println("you deal " + damage + " damage to the ogre. it now has " + ogreHP + " HP.\n" +
+                        "You have " + playerHP + " HP");
             } else if (choice == 2) {
                 System.out.println("the ogre kills you! you lose");
                 return;
@@ -64,8 +66,6 @@ public class FlardQuest {
         } else {
             System.out.println("you lose.\n");
         }
-
-
     }
 }
 
@@ -80,7 +80,17 @@ class Sword extends Weapon {
 }
 
 class Wand extends Weapon {
+    Random rand;
+
+    Wand() {
+        rand = new Random();
+    }
+
     int attackDamage() {
-        return 8;
+        if (this.rand.nextInt(5) < 2) {
+            return 16;
+        } else {
+            return 8;
+        }
     }
 }
