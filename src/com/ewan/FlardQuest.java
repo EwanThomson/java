@@ -14,36 +14,58 @@ public class FlardQuest {
     }
 
     boolean fight(ArrayList<Enemy> enemies) {
-
-        for (Enemy enemy : enemies) { // iterate over the list
+        for (Enemy enemy : enemies) {
             System.out.println("you see a(n) " + enemy.name);
-            while (enemy.HP > 0 && playerHP > 0) {
+        }
+        boolean anyEnemyLiving = true;
+        while (anyEnemyLiving && playerHP > 0) {
+            System.out.println("fight or run? (1 = fight, 2 = run)");
+            int choice = this.sc.nextInt();
 
-                System.out.println("fight or run? (1 = fight, 2 = run)");
-                int choice = this.sc.nextInt();
-                playerHP -= enemy.attackDamage();
-                if (choice == 1) {
-                    int damage = weapon.attackDamage();
-                    enemy.HP -= damage;
-                    if (enemy.HP < 0) {
-                        enemy.HP = 0;
+            for (Enemy enemy : enemies) {
+                if (enemy.HP > 0) {
+                    int damage = enemy.attackDamage();
+                    playerHP -= damage;
+                    System.out.println("the " + enemy.name + " deals " + damage + " damage");
+                }
+            }
+            if (playerHP < 0) {
+                playerHP = 0;
+            }
+            System.out.println("you have " + playerHP + " HP");
+
+            if (choice == 1) {
+                for (Enemy enemy : enemies) {
+                    if (enemy.HP > 0) {
+                        int damage = weapon.attackDamage();
+                        enemy.HP -= damage;
+                        if (enemy.HP < 0) {
+                            enemy.HP = 0;
+                        }
+                        System.out.println("you deal " + damage + " damage to the " + enemy.name + ". it now has " + enemy.HP + " HP.");
+                        break;
                     }
 
-                    System.out.println("you deal " + damage + " damage to the " + enemy.name + ". it now has " + enemy.HP + " HP.\n" +
-                            "You have " + playerHP + " HP");
-                } else if (choice == 2) {
-                    System.out.println("the " + enemy.name + " kills you! you lose");
-                    return false;
+                }
+            } else if (choice == 2) {
+                System.out.println("the enemies kills you! you lose");
+                return false;
+            }
+
+            anyEnemyLiving = false;
+            for (Enemy enemy : enemies) {
+                if (enemy.HP > 0) {
+                    anyEnemyLiving = true;
                 }
             }
         }
+
         if (playerHP > 0) {
             return true;
         } else {
             System.out.println("you lose.\n");
             return false;
         }
-
     }
 
     void run() {
@@ -61,7 +83,7 @@ public class FlardQuest {
             return;
         }
 
-        System.out.println("you head to the woods and find a slime and a pillager");
+        System.out.println("you head to the woods and find a slime");
         ArrayList<Enemy> slimeFight = new ArrayList<>();
         slimeFight.add(new Slime());
         if (!fight(slimeFight)) {
