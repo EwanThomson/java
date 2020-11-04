@@ -1,5 +1,6 @@
 package com.ewan;
 
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -12,22 +13,28 @@ public class FlardQuest {
         this.sc = sc;
     }
 
-    boolean fight(Enemy enemy) {
-        while (enemy.HP > 0 && playerHP > 0) {
-            System.out.println("fight or run? (1 = fight, 2 = run)");
-            int choice = this.sc.nextInt();
-            playerHP -= 15;
-            if (choice == 1) {
-                int damage = weapon.attackDamage();
-                enemy.HP -= damage;
-                if (enemy.HP < 0) {
-                    enemy.HP = 0;
+    boolean fight(ArrayList<Enemy> enemies) {
+
+        for (Enemy enemy : enemies) { // iterate over the list
+            System.out.println("you see a(n) " + enemy.name);
+            while (enemy.HP > 0 && playerHP > 0) {
+
+                System.out.println("fight or run? (1 = fight, 2 = run)");
+                int choice = this.sc.nextInt();
+                playerHP -= enemy.attackDamage();
+                if (choice == 1) {
+                    int damage = weapon.attackDamage();
+                    enemy.HP -= damage;
+                    if (enemy.HP < 0) {
+                        enemy.HP = 0;
+                    }
+
+                    System.out.println("you deal " + damage + " damage to the " + enemy.name + ". it now has " + enemy.HP + " HP.\n" +
+                            "You have " + playerHP + " HP");
+                } else if (choice == 2) {
+                    System.out.println("the " + enemy.name + " kills you! you lose");
+                    return false;
                 }
-                System.out.println("you deal " + damage + " damage to the " + enemy.name + ". it now has " + enemy.HP + " HP.\n" +
-                        "You have " + playerHP + " HP");
-            } else if (choice == 2) {
-                System.out.println("the " + enemy.name + " kills you! you lose");
-                return false;
             }
         }
         if (playerHP > 0) {
@@ -36,6 +43,7 @@ public class FlardQuest {
             System.out.println("you lose.\n");
             return false;
         }
+
     }
 
     void run() {
@@ -53,11 +61,16 @@ public class FlardQuest {
             return;
         }
 
-        System.out.println("you head to the woods and find a slime");
-        if (!fight(new Slime())) {
+        System.out.println("you head to the woods and find a slime and a pillager");
+        ArrayList<Enemy> slimeFight = new ArrayList<>();
+        slimeFight.add(new Slime());
+        if (!fight(slimeFight)) {
             return;
-        };
-        if (!fight(new Ogre())) {
+        }
+        ArrayList<Enemy> ogreFight = new ArrayList<>();
+        ogreFight.add(new Slime());
+        ogreFight.add(new Pillager());
+        if (!fight(ogreFight)) {
             return;
         }
         System.out.println("you win!\n");
@@ -102,7 +115,16 @@ class Slime extends Enemy {
         this.HP = 24;
     }
     int attackDamage() {
-        return 1;
+        return 5;
+    }
+}
+class Pillager extends Enemy {
+    Pillager() {
+        this.name = "pillager";
+        this.HP = 15;
+    }
+    int attackDamage() {
+        return 15;
     }
 }
 class Ogre extends Enemy {
@@ -111,6 +133,6 @@ class Ogre extends Enemy {
         this.HP = 30;
     }
     int attackDamage() {
-        return 15;
+        return 10;
     }
 }
