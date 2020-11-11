@@ -28,6 +28,9 @@ public class Main {
                 case 4:
                     new FlardQuest(sc).run();
                     break;
+                case 5:
+                    test(sc);
+                    break;
                 default:
                     System.out.println("that is not a valid response");
             }
@@ -55,15 +58,15 @@ public class Main {
         System.out.println("how much is the cost?");
         float cost = sc.nextFloat();
         float tax = cost * 0.0725f;
-        System.out.println("the sales tax is "+ tax);
-        System.out.println("the total is "+ (cost+tax));
+        System.out.println("the sales tax is " + tax);
+        System.out.println("the total is " + (cost + tax));
     }
 
     static void grades(Scanner sc) {
         System.out.println("Type \"done\" when you're done");
         ArrayList<Integer> grades = new ArrayList<>();
         while (true) {
-            System.out.print("Enter grade " + (grades.size()+1) + ": ");
+            System.out.print("Enter grade " + (grades.size() + 1) + ": ");
             try {
                 int grade = sc.nextInt();
                 grades.add(grade);
@@ -79,6 +82,17 @@ public class Main {
             total += grade;
         }
         System.out.println();
-        System.out.println("The average is " + ((float)total / grades.size()));
+        System.out.println("The average is " + ((float) total / grades.size()));
+    }
+
+    static void test(Scanner sc) {
+        System.out.println("five is " + five(sc));
+    }
+
+    static boolean five(Scanner sc) {
+        if (sc.nextInt() == 1)
+            return true;
+        else
+            return false;
     }
 }

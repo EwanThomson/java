@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
+// 1. add more fights
+// 2. add items (healing potions, weapon upgrades)
+
 public class FlardQuest {
     Scanner sc;
     Weapon weapon;
@@ -13,13 +16,17 @@ public class FlardQuest {
         this.sc = sc;
     }
 
+
     boolean fight(ArrayList<Enemy> enemies) {
+        int healingTime = 3;
         for (Enemy enemy : enemies) {
             System.out.println("you see a(n) " + enemy.name);
         }
+
         boolean anyEnemyLiving = true;
         while (anyEnemyLiving && playerHP > 0) {
-            System.out.println("fight or run? (1 = fight, 2 = run)");
+            healingTime++;
+            System.out.println("fight or heal? (1 = fight, 2 = heal)");
             int choice = this.sc.nextInt();
 
             for (Enemy enemy : enemies) {
@@ -34,7 +41,11 @@ public class FlardQuest {
             }
             System.out.println("you have " + playerHP + " HP");
 
-            if (choice == 1) {
+            // a: you deal damage (choice == 1|| choice == 2 && healingTime<3)
+            // b: you heal (choice == 2 && healingTime >= 3)
+            if (choice == 2 && healingTime >= 3) {
+                playerHP = 100;
+            } else {
                 for (Enemy enemy : enemies) {
                     if (enemy.HP > 0) {
                         int damage = weapon.attackDamage();
@@ -45,11 +56,7 @@ public class FlardQuest {
                         System.out.println("you deal " + damage + " damage to the " + enemy.name + ". it now has " + enemy.HP + " HP.");
                         break;
                     }
-
                 }
-            } else if (choice == 2) {
-                System.out.println("the enemies kills you! you lose");
-                return false;
             }
 
             anyEnemyLiving = false;
@@ -89,12 +96,19 @@ public class FlardQuest {
         if (!fight(slimeFight)) {
             return;
         }
-        ArrayList<Enemy> ogreFight = new ArrayList<>();
-        ogreFight.add(new Slime());
-        ogreFight.add(new Pillager());
-        if (!fight(ogreFight)) {
+        ArrayList<Enemy> pillagerFight = new ArrayList<>();
+        pillagerFight.add(new Slime());
+        pillagerFight.add(new Pillager());
+        if (!fight(pillagerFight)) {
             return;
         }
+        ArrayList<Enemy> extremeFight = new ArrayList<>();
+        extremeFight.add(new Ogre());
+        extremeFight.add(new Pillager());
+        if (!fight(extremeFight)) {
+            return;
+        }
+
         System.out.println("you win!\n");
     }
 }
@@ -128,6 +142,7 @@ class Wand extends Weapon {
 abstract class Enemy {
     String name;
     int HP;
+
     abstract int attackDamage();
 }
 
@@ -136,24 +151,29 @@ class Slime extends Enemy {
         this.name = "slime";
         this.HP = 24;
     }
+
     int attackDamage() {
         return 5;
     }
 }
+
 class Pillager extends Enemy {
     Pillager() {
         this.name = "pillager";
         this.HP = 15;
     }
+
     int attackDamage() {
         return 15;
     }
 }
+
 class Ogre extends Enemy {
     Ogre() {
         this.name = "ogre";
         this.HP = 30;
     }
+
     int attackDamage() {
         return 10;
     }
