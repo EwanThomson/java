@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
-// 1. add more fights
-// 2. add items (weapon upgrades)
 public class FlardQuest {
     Scanner sc;
     Weapon weapon;
@@ -38,6 +36,7 @@ public class FlardQuest {
                 playerHP = 0;
             }
             System.out.println("you have " + playerHP + " HP");
+            System.out.println(hpBar(playerHP));
 
             if (choice == 2 && healingTime >= 3) {
                 playerHP = 100;
@@ -57,6 +56,7 @@ public class FlardQuest {
 
             anyEnemyLiving = false;
             for (Enemy enemy : enemies) {
+                System.out.println(hpBar(enemy.HP));
                 if (enemy.HP > 0) {
                     anyEnemyLiving = true;
                 }
@@ -69,6 +69,14 @@ public class FlardQuest {
             System.out.println("you lose.\n");
             return false;
         }
+    }
+
+    String hpBar(int hp) {
+        String bar = "";
+        for (int i = 0; i < hp; i++) {
+            bar += '|';
+        }
+        return bar;
     }
 
     void run() {
