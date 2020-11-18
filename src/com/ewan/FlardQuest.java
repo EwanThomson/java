@@ -5,6 +5,10 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class FlardQuest {
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_RED_BACKGROUND = "\u001B[41m";
+    public static final String ANSI_GREEN_BACKGROUND = "\u001B[42m";
+
     Scanner sc;
     Weapon weapon;
     int playerHP = 100;
@@ -36,7 +40,7 @@ public class FlardQuest {
                 playerHP = 0;
             }
             System.out.println("you have " + playerHP + " HP");
-            System.out.println(hpBar(playerHP));
+            System.out.println(hpBar(playerHP, ANSI_GREEN_BACKGROUND));
 
             if (choice == 2 && healingTime >= 3) {
                 playerHP = 100;
@@ -56,7 +60,7 @@ public class FlardQuest {
 
             anyEnemyLiving = false;
             for (Enemy enemy : enemies) {
-                System.out.println(hpBar(enemy.HP));
+                System.out.println(hpBar(enemy.HP, ANSI_RED_BACKGROUND));
                 if (enemy.HP > 0) {
                     anyEnemyLiving = true;
                 }
@@ -71,12 +75,12 @@ public class FlardQuest {
         }
     }
 
-    String hpBar(int hp) {
-        String bar = "";
+    String hpBar(int hp, String color) {
+        String bar = color;
         for (int i = 0; i < hp; i++) {
-            bar += '|';
+            bar += ' ';
         }
-        return bar;
+        return bar + ANSI_RESET;
     }
 
     void run() {
