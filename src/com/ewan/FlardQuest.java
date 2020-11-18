@@ -5,8 +5,7 @@ import java.util.Random;
 import java.util.Scanner;
 
 // 1. add more fights
-// 2. add items (healing potions, weapon upgrades)
-
+// 2. add items (weapon upgrades)
 public class FlardQuest {
     Scanner sc;
     Weapon weapon;
@@ -15,7 +14,6 @@ public class FlardQuest {
     FlardQuest(Scanner sc) {
         this.sc = sc;
     }
-
 
     boolean fight(ArrayList<Enemy> enemies) {
         int healingTime = 3;
@@ -41,8 +39,6 @@ public class FlardQuest {
             }
             System.out.println("you have " + playerHP + " HP");
 
-            // a: you deal damage (choice == 1|| choice == 2 && healingTime<3)
-            // b: you heal (choice == 2 && healingTime >= 3)
             if (choice == 2 && healingTime >= 3) {
                 playerHP = 100;
             } else {
@@ -107,6 +103,23 @@ public class FlardQuest {
         extremeFight.add(new Pillager());
         if (!fight(extremeFight)) {
             return;
+
+        }
+        System.out.println("the guildmaster offers you a upgrade.\n" +
+                "do you accept? (1 = yes, 2 = no)");
+        choice = this.sc.nextInt();
+
+        if (choice == 1) {
+            weapon = new SwordWand();
+        } else {
+            System.out.println("you have no need for upgrades, so you carry on with your current gear");
+        }
+
+        ArrayList<Enemy> testFight = new ArrayList<>();
+        testFight.add(new Tester());
+        testFight.add(new Tester());
+        if (!fight(testFight)) {
+            return;
         }
 
         System.out.println("you win!\n");
@@ -135,6 +148,22 @@ class Wand extends Weapon {
             return 16;
         } else {
             return 8;
+        }
+    }
+}
+
+class SwordWand extends Weapon {
+    Random rand;
+
+    SwordWand() {
+        rand = new Random();
+    }
+
+    int attackDamage() {
+        if (this.rand.nextInt(5) < 2) {
+            return 26;
+        } else {
+            return 18;
         }
     }
 }
@@ -176,5 +205,16 @@ class Ogre extends Enemy {
 
     int attackDamage() {
         return 10;
+    }
+}
+
+class Tester extends Enemy {
+    Tester() {
+        this.name = "test";
+        this.HP = 100;
+    }
+
+    int attackDamage() {
+        return 0;
     }
 }
