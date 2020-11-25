@@ -142,13 +142,23 @@ public class FlardQuest {
             System.out.println("you have no need for upgrades, so you carry on with your current gear");
         }
 
+        ArrayList<Class<? extends Enemy>> enemyTypes = new ArrayList<>();
+        enemyTypes.add(Slime.class);
+        enemyTypes.add(Pillager.class);
+        enemyTypes.add(Ogre.class);
+        Random rand = new Random();
         int stage = 0;
         while (true) {
             stage++;
             ArrayList<Enemy> fight = new ArrayList<>();
             for (int i = 0; i < stage; i++) {
-                fight.add(new Ogre());
-                fight.add(new Pillager());
+                Enemy enemy;
+                try {
+                    enemy = enemyTypes.get(rand.nextInt(3)).getDeclaredConstructor().newInstance();
+                } catch (ReflectiveOperationException e) {
+                    throw new RuntimeException(e);
+                }
+                fight.add(enemy);
             }
             if (!fight(fight)) {
                 return;
