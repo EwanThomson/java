@@ -12,6 +12,7 @@ public class FlardQuest {
     Scanner sc;
     Weapon weapon;
     int playerHP = 100;
+    int armor = 0;
 
     FlardQuest(Scanner sc) {
         this.sc = sc;
@@ -31,7 +32,10 @@ public class FlardQuest {
 
             for (Enemy enemy : enemies) {
                 if (enemy.HP > 0) {
-                    int damage = enemy.attackDamage();
+                    int damage = enemy.attackDamage() - armor;
+                    if (damage < 0) {
+                        damage = 0;
+                    }
                     playerHP -= damage;
                     System.out.println("the " + enemy.name + " deals " + damage + " damage");
                 }
@@ -110,31 +114,46 @@ public class FlardQuest {
         if (!fight(pillagerFight)) {
             return;
         }
+
+        System.out.println("the guildmaster offers you a upgrade.\n" +
+                "do you accept? (1 = yes, 2 = no)");
+        choice = this.sc.nextInt();
+        if (choice == 1) {
+            weapon = new SwordWand();
+            System.out.println("the guildmaster gives you a swordwand!");
+        } else {
+            System.out.println("you have no need for upgrades, so you carry on with your current gear");
+        }
+
         ArrayList<Enemy> extremeFight = new ArrayList<>();
         extremeFight.add(new Ogre());
         extremeFight.add(new Pillager());
         if (!fight(extremeFight)) {
             return;
-
         }
+
         System.out.println("the guildmaster offers you a upgrade.\n" +
                 "do you accept? (1 = yes, 2 = no)");
         choice = this.sc.nextInt();
-
         if (choice == 1) {
-            weapon = new SwordWand();
+            armor += 5;
+            System.out.println("the guildmaster improves your armor");
         } else {
             System.out.println("you have no need for upgrades, so you carry on with your current gear");
         }
 
-        ArrayList<Enemy> testFight = new ArrayList<>();
-        testFight.add(new Tester());
-        testFight.add(new Tester());
-        if (!fight(testFight)) {
-            return;
+        int stage = 0;
+        while (true) {
+            stage++;
+            ArrayList<Enemy> fight = new ArrayList<>();
+            for (int i = 0; i < stage; i++) {
+                fight.add(new Ogre());
+                fight.add(new Pillager());
+            }
+            if (!fight(fight)) {
+                return;
+            }
         }
-
-        System.out.println("you win!\n");
     }
 }
 
