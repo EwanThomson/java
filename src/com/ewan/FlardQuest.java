@@ -11,9 +11,8 @@ public class FlardQuest {
 
     Scanner sc;
     Weapon weapon;
+    Armor armor = (damage) -> damage;
     int playerHP = 100;
-    int armor = 0;
-
     FlardQuest(Scanner sc) {
         this.sc = sc;
     }
@@ -32,7 +31,7 @@ public class FlardQuest {
 
             for (Enemy enemy : enemies) {
                 if (enemy.HP > 0) {
-                    int damage = enemy.attackDamage() - armor;
+                    int damage = armor.reducedDamage(enemy.attackDamage());
                     if (damage < 0) {
                         damage = 0;
                     }
@@ -132,14 +131,16 @@ public class FlardQuest {
             return;
         }
 
-        System.out.println("the guildmaster offers you a upgrade.\n" +
-                "do you accept? (1 = yes, 2 = no)");
+        System.out.println("the guildmaster offers you a choice of armor.\n" +
+                "do you accept? (1 = heavy [percentage damage reduction], 2 = light [flat damage reduction])");
         choice = this.sc.nextInt();
         if (choice == 1) {
-            armor += 5;
-            System.out.println("the guildmaster improves your armor");
+            armor = new Heavy();
+            System.out.println("the guildmaster gives you heavy armor");
         } else {
-            System.out.println("you have no need for upgrades, so you carry on with your current gear");
+            armor = new Light();
+            System.out.println("the guildmaster gives you light armor");
+
         }
 
         ArrayList<Class<? extends Enemy>> enemyTypes = new ArrayList<>();
@@ -163,10 +164,12 @@ public class FlardQuest {
             if (!fight(fight)) {
                 return;
             }
+            /*
             if (armor < 14) {
                 armor++;
                 System.out.println("the guildmaster improves your armor");
             }
+             */
         }
     }
 }
@@ -254,13 +257,18 @@ class Ogre extends Enemy {
     }
 }
 
-class Tester extends Enemy {
-    Tester() {
-        this.name = "test";
-        this.HP = 100;
-    }
+interface Armor {;
+    int reducedDamage(int damage);
+}
 
-    int attackDamage() {
-        return 0;
+class Heavy implements Armor {
+    public int reducedDamage(int damage) {
+        return (int)(damage * 0.85);
+    }
+}
+
+class Light implements Armor {
+    public int reducedDamage(int damage) {
+        return damage - 5;
     }
 }
