@@ -163,9 +163,14 @@ public class FlardQuest {
             if (!fight(fight)) {
                 return;
             }
+            if (armor < 14) {
+                armor++;
+                System.out.println("the guildmaster improves your armor");
+            }
         }
     }
 }
+
 
 abstract class Weapon {
     abstract int attackDamage();
