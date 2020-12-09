@@ -13,5 +13,9 @@ class FlardQuestTest {
 
         Ultimate ultimate = new Ultimate();
         assertEquals(3, ultimate.reducedDamage(10));
+        ultimate.upgradeFlat();
+        assertEquals(2, ultimate.reducedDamage(10));
+        ultimate.upgradePercent();
+        assertEquals(74, ultimate.reducedDamage(100));
     }
 }

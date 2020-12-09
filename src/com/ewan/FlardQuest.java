@@ -16,7 +16,7 @@ public class FlardQuest {
 
     Scanner sc;
     Weapon weapon;
-    Armor armor;
+    Armor armor = (damage) -> damage;
     int playerHP = 100;
 
     FlardQuest(Scanner sc) {
@@ -107,6 +107,13 @@ public class FlardQuest {
             return;
         }
 
+        System.out.println("you head to the woods and find a slime");
+        ArrayList<Enemy> slimeFight = new ArrayList<>();
+        slimeFight.add(new Slime());
+        if (!fight(slimeFight)) {
+            return;
+        }
+
         System.out.println("the guildmaster offers you a choice of armor.\n" +
                 "do you accept? (1 = heavy [percentage damage reduction], 2 = light [flat damage reduction])");
         choice = this.sc.nextInt();
@@ -118,12 +125,6 @@ public class FlardQuest {
             System.out.println("the guildmaster gives you light armor");
         }
 
-        System.out.println("you head to the woods and find a slime");
-        ArrayList<Enemy> slimeFight = new ArrayList<>();
-        slimeFight.add(new Slime());
-        if (!fight(slimeFight)) {
-            return;
-        }
         ArrayList<Enemy> pillagerFight = new ArrayList<>();
         pillagerFight.add(new Slime());
         pillagerFight.add(new Pillager());
@@ -174,17 +175,28 @@ public class FlardQuest {
                 armor = new Ultimate();
             } else if (stage > 5) {
                 System.out.println("the guildmaster offers you a upgrade.\n" +
-                        "(1 = upgrade flat, 2 = uprade precent)");
+                        "(1 = upgrade flat, 2 = upgrade percent)");
                 choice = this.sc.nextInt();
                 if (choice == 1) {
-                    armor.upgradeConstant = 5 + stage;
-                    armor.upgradePercent = 0.85f;
-                    System.out.println("the guildmaster gives you the upgrade.");
+                    // start:   (damage * 0.85) - 0  => 10 -> 8
+                    // stage 5: (damage * 0.85) - 5  => 10 -> 3
+                    // stage 6: (damage * 0.85) - 11 => 10 -> -3
+                    // stage 7: (damage * 0.85) - 12 => 10 -> -4
+                    // stage 8: (damage * 0.05) - 13 => 10 -> -5
+                    armor.upgradeFlat();
+                    System.out.println("the guildmaster gives you the flat upgrade.");
                 } else {
-                    armor.upgradeConstant = 5;
-                    armor.upgradePercent = 0.85f / stage;
-                    System.out.println("the guildmaster gives you the upgrade.");
+                    // start:   (damage * 1.00) - 5  => 10 -> 5
+                    // stage 5: (damage * 0.85) - 5  => 10 -> 3
+                    // stage 6: (damage * 0.14) - 5  => 10 -> -4
+                    // stage 7: (damage * 0.12) - 5  => 10 -> -4
+                    // stage 8: (damage * 0.11) - 5  => 10 -> -4
+                    armor.upgradePercent();
+                    System.out.println("the guildmaster gives you the percent upgrade.");
                 }
+                    // stage 5: (damage * 0.85) - 5  => 10 -> 3
+                    // stage 6: (damage * 0.85) - 11 => 10 -> -3
+                    // stage 7: (damage * 0.12) - 5
             }
         }
     }
@@ -272,27 +284,42 @@ class Ogre extends Enemy {
     }
 }
 
-abstract class Armor {
-    public int upgradeConstant = 5;
-    public float upgradePercent = 0.85f;
-
-    abstract int reducedDamage(int damage);
-}
-
-class Heavy extends Armor {
-    public int reducedDamage(int damage) {
-        return (int) (damage * upgradePercent);
+interface Armor {
+    int reducedDamage(int damage);
+    default void upgradeFlat() {
+        throw new IllegalStateException("cannot upgrade this armor type");
+    }
+    default void upgradePercent() {
+        throw new IllegalStateException("cannot upgrade this armor type");
     }
 }
 
-class Light extends Armor {
+class Heavy implements Armor {
     public int reducedDamage(int damage) {
-        return damage - upgradeConstant;
+        return (int) (damage * 0.85);
     }
 }
 
-class Ultimate extends Armor {
+class Light implements Armor {
     public int reducedDamage(int damage) {
-        return (int) (damage * upgradePercent) - upgradeConstant;
+        return damage - 5;
+    }
+}
+
+class Ultimate implements Armor {
+    public int flatUpgradeLevel = 0;
+    public int percentUpgradeLevel = 0;
+    public int reducedDamage(int damage) {
+        float percentReduction = 0.15f + percentUpgradeLevel * 0.05f;
+        return (int) (damage * (1.0f - percentReduction)) - (5 + this.flatUpgradeLevel);
+    }
+    public void upgradeFlat() {
+        this.flatUpgradeLevel++;
+    }
+    public void upgradePercent() {
+        if (this.percentUpgradeLevel >= 17) {
+            return;
+        }
+        this.percentUpgradeLevel++;
     }
 }
