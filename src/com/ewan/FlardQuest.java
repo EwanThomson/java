@@ -148,7 +148,6 @@ public class FlardQuest {
             return;
         }
 
-
         ArrayList<Class<? extends Enemy>> enemyTypes = new ArrayList<>();
         enemyTypes.add(Slime.class);
         enemyTypes.add(Pillager.class);
@@ -172,20 +171,18 @@ public class FlardQuest {
             }
             if (stage == 5) {
                 System.out.println("the guildmaster gives you an upgrade to your armor");
-                armor = new ultimate();
-
-            }
-            if (stage > 5) {
+                armor = new Ultimate();
+            } else if (stage > 5) {
                 System.out.println("the guildmaster offers you a upgrade.\n" +
                         "(1 = upgrade flat, 2 = uprade precent)");
                 choice = this.sc.nextInt();
                 if (choice == 1) {
                     armor.upgradeConstant = 5 + stage;
-                    armor.upgradePercent = 0.85;
+                    armor.upgradePercent = 0.85f;
                     System.out.println("the guildmaster gives you the upgrade.");
                 } else {
                     armor.upgradeConstant = 5;
-                    armor.upgradePercent = 0.85 / stage;
+                    armor.upgradePercent = 0.85f / stage;
                     System.out.println("the guildmaster gives you the upgrade.");
                 }
             }
@@ -277,7 +274,7 @@ class Ogre extends Enemy {
 
 abstract class Armor {
     public int upgradeConstant = 5;
-    public double upgradePercent = 0.85;
+    public float upgradePercent = 0.85f;
 
     abstract int reducedDamage(int damage);
 }
@@ -294,9 +291,8 @@ class Light extends Armor {
     }
 }
 
-class ultimate extends Armor {
-
+class Ultimate extends Armor {
     public int reducedDamage(int damage) {
-        return damage - upgradeConstant + (int) (damage * upgradePercent);
+        return (int) (damage * upgradePercent) - upgradeConstant;
     }
 }
