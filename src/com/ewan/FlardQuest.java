@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
+// make armor upgrade across stages
+// 1.
+// 2. give the new armor class an instance variable that tracks how upgraded it is
+// 3. increment the armor's instance variable every stage
+
 public class FlardQuest {
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_RED_BACKGROUND = "\u001B[41m";
@@ -11,8 +16,9 @@ public class FlardQuest {
 
     Scanner sc;
     Weapon weapon;
-    Armor armor = (damage) -> damage;
+    Armor armor;
     int playerHP = 100;
+
     FlardQuest(Scanner sc) {
         this.sc = sc;
     }
@@ -101,6 +107,17 @@ public class FlardQuest {
             return;
         }
 
+        System.out.println("the guildmaster offers you a choice of armor.\n" +
+                "do you accept? (1 = heavy [percentage damage reduction], 2 = light [flat damage reduction])");
+        choice = this.sc.nextInt();
+        if (choice == 1) {
+            armor = new Heavy();
+            System.out.println("the guildmaster gives you heavy armor");
+        } else {
+            armor = new Light();
+            System.out.println("the guildmaster gives you light armor");
+        }
+
         System.out.println("you head to the woods and find a slime");
         ArrayList<Enemy> slimeFight = new ArrayList<>();
         slimeFight.add(new Slime());
@@ -131,17 +148,6 @@ public class FlardQuest {
             return;
         }
 
-        System.out.println("the guildmaster offers you a choice of armor.\n" +
-                "do you accept? (1 = heavy [percentage damage reduction], 2 = light [flat damage reduction])");
-        choice = this.sc.nextInt();
-        if (choice == 1) {
-            armor = new Heavy();
-            System.out.println("the guildmaster gives you heavy armor");
-        } else {
-            armor = new Light();
-            System.out.println("the guildmaster gives you light armor");
-
-        }
 
         ArrayList<Class<? extends Enemy>> enemyTypes = new ArrayList<>();
         enemyTypes.add(Slime.class);
@@ -164,16 +170,28 @@ public class FlardQuest {
             if (!fight(fight)) {
                 return;
             }
-            /*
-            if (armor < 14) {
-                armor++;
-                System.out.println("the guildmaster improves your armor");
+            if (stage == 5) {
+                System.out.println("the guildmaster gives you an upgrade to your armor");
+                armor = new ultimate();
+
             }
-             */
+            if (stage > 5) {
+                System.out.println("the guildmaster offers you a upgrade.\n" +
+                        "(1 = upgrade flat, 2 = uprade precent)");
+                choice = this.sc.nextInt();
+                if (choice == 1) {
+                    armor.upgradeConstant = 5 + stage;
+                    armor.upgradePercent = 0.85;
+                    System.out.println("the guildmaster gives you the upgrade.");
+                } else {
+                    armor.upgradeConstant = 5;
+                    armor.upgradePercent = 0.85 / stage;
+                    System.out.println("the guildmaster gives you the upgrade.");
+                }
+            }
         }
     }
 }
-
 
 abstract class Weapon {
     abstract int attackDamage();
@@ -257,18 +275,28 @@ class Ogre extends Enemy {
     }
 }
 
-interface Armor {;
-    int reducedDamage(int damage);
+abstract class Armor {
+    public int upgradeConstant = 5;
+    public double upgradePercent = 0.85;
+
+    abstract int reducedDamage(int damage);
 }
 
-class Heavy implements Armor {
+class Heavy extends Armor {
     public int reducedDamage(int damage) {
-        return (int)(damage * 0.85);
+        return (int) (damage * upgradePercent);
     }
 }
 
-class Light implements Armor {
+class Light extends Armor {
     public int reducedDamage(int damage) {
-        return damage - 5;
+        return damage - upgradeConstant;
+    }
+}
+
+class ultimate extends Armor {
+
+    public int reducedDamage(int damage) {
+        return damage - upgradeConstant + (int) (damage * upgradePercent);
     }
 }
