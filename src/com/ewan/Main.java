@@ -14,6 +14,7 @@ public class Main {
             System.out.println("2 sales tax calculator");
             System.out.println("3 grade calculator");
             System.out.println("4 flard quest");
+            System.out.println("5 spelling bee");
             int response = sc.nextInt();
             switch (response) {
                 case 1:
@@ -29,6 +30,9 @@ public class Main {
                     new FlardQuest(sc).run();
                     break;
                 case 5:
+                    new SpellingBee(sc).run();
+                    break;
+                case 6:
                     test(sc);
                     break;
                 default:
