@@ -19,7 +19,7 @@ public class SpellingBee {
         Random rand = new Random();
         List<String> words;
         try {
-            words = Files.readAllLines(Path.of("/usr/share/dict/words"));
+            words = Files.readAllLines(Path.of("/Users/ewan/Documents/GitHub/java/spelling_bee.txt"));
         } catch (IOException e) {
             e.printStackTrace();
             return;
@@ -28,13 +28,16 @@ public class SpellingBee {
         while (true) {
             String word = words.get(rand.nextInt(words.size()));
             System.out.println("try to spell this word");
-            say(word);
+            if (this.sc.hasNextLine()) {
+                this.sc.nextLine();
+            }
             for (int i = 0; i < 3; i++) {
+                say(word);
                 String choice = this.sc.nextLine();
                 if (choice.equals(word)) {
                     System.out.println("good job");
                 } else if (i < 2) {
-                    System.out.println("try again. this was attempt number " + i);
+                    System.out.println("try again. this was attempt number " + (i + 1));
                 } else {
                     System.out.println("sorry you couldn't spell " + word);
                 }
