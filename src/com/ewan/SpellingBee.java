@@ -27,17 +27,37 @@ public class SpellingBee {
 
         while (true) {
             String word = words.get(rand.nextInt(words.size()));
+            String hint = "";
+            for (int i = 0; i < word.length(); i++) {
+                hint += '_';
+            }
             System.out.println("try to spell this word");
             if (this.sc.hasNextLine()) {
                 this.sc.nextLine();
             }
             for (int i = 0; i < 3; i++) {
                 say(word);
+                System.out.println(hint);
                 String choice = this.sc.nextLine();
                 if (choice.equals(word)) {
                     System.out.println("good job");
                 } else if (i < 2) {
                     System.out.println("try again. this was attempt number " + (i + 1));
+                    boolean foundUnrevealedIndex = false;
+                    int index;
+                    do {
+                        index = rand.nextInt(word.length());
+                        foundUnrevealedIndex = hint.charAt(index) != '_';
+                    } while (foundUnrevealedIndex);
+                    String newHint = "";
+                    for (int j = 0; j < word.length(); j++) {
+                        if (j == index) {
+                            newHint += word.charAt(j);
+                        } else {
+                            newHint += hint.charAt(j);
+                        }
+                    }
+                    hint = newHint;
                 } else {
                     System.out.println("sorry you couldn't spell " + word);
                 }
